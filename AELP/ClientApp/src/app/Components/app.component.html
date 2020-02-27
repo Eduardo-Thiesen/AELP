@@ -1,0 +1,104 @@
+<div>
+    <app-nodes (listChangedEvent)="updateNodes($event)"></app-nodes>
+    <app-materials (listChangedEvent)="updateMaterials($event)"></app-materials>
+    <app-sections (listChangedEvent)="updateSections($event)"></app-sections>
+    <app-elements [nodes]="nodes" [materials]="materials" [sections]="sections" (listChangedEvent)="updateElements($event)"></app-elements>
+    <app-nodalLoads [nodes]="nodes" (listChangedEvent)="updateNodalLoads($event)"></app-nodalLoads>
+    <app-elementLoads [elements]="elements" (listChangedEvent)="updateElementLoads($event)"></app-elementLoads>
+    <mat-card>
+        <mat-card-actions align="end">
+            <button mat-button (click)="getResults()">Calcular</button>
+        </mat-card-actions>
+        <div *ngIf="error">Erro: estrutura inválida</div>
+    </mat-card>
+</div>
+<div *ngIf="isCalculated()">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Resultados</mat-card-title>
+        </mat-card-header>
+    </mat-card>
+    <mat-card-content>
+        <mat-card-subtitle>Deslocamentos Nodais:</mat-card-subtitle>
+        <table mat-table [dataSource]="result.displacements">
+
+            <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef> Nó </th>
+                <td mat-cell *matCellDef="let element"> {{element.node}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dx">
+                <th mat-header-cell *matHeaderCellDef> Dx </th>
+                <td mat-cell *matCellDef="let element"> {{element.dx | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dy">
+                <th mat-header-cell *matHeaderCellDef> Dy </th>
+                <td mat-cell *matCellDef="let element"> {{element.dy | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rz">
+                <th mat-header-cell *matHeaderCellDef> Rz </th>
+                <td mat-cell *matCellDef="let element"> {{element.rz | ScientificNotation}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-card-subtitle>Esforços nos Elementos:</mat-card-subtitle>
+        <table mat-table [dataSource]="result.reactions">
+
+            <ng-container matColumnDef="elem">
+                <th mat-header-cell *matHeaderCellDef> Nó </th>
+                <td mat-cell *matCellDef="let element"> {{element.element}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ni">
+                <th mat-header-cell *matHeaderCellDef> Ni </th>
+                <td mat-cell *matCellDef="let element"> {{element.ni | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="qi">
+                <th mat-header-cell *matHeaderCellDef> Qi </th>
+                <td mat-cell *matCellDef="let element"> {{element.qi | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mi">
+                <th mat-header-cell *matHeaderCellDef> Mi </th>
+                <td mat-cell *matCellDef="let element"> {{element.mi | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="nj">
+                <th mat-header-cell *matHeaderCellDef> Nj </th>
+                <td mat-cell *matCellDef="let element"> {{element.nj | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="qj">
+                <th mat-header-cell *matHeaderCellDef> Qj </th>
+                <td mat-cell *matCellDef="let element"> {{element.qj | ScientificNotation}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mj">
+                <th mat-header-cell *matHeaderCellDef> Mj </th>
+                <td mat-cell *matCellDef="let element"> {{element.mj | ScientificNotation}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+        </table>
+    </mat-card-content>
+    
+
+    <!-- <mat-list>
+        <h3 mat-subheader>Deslocamentos Nodais</h3>
+        <mat-list-item *ngFor="let disp of result.displacements">
+            Nó: {{disp.node}}  Dx: {{disp.dx}}  Dy: {{disp.dy}}  Rz: {{disp.rz}}
+        </mat-list-item>
+    </mat-list>
+    <mat-list>
+        <h3 mat-subheader>Esforços nos Elementos</h3>
+        <mat-list-item *ngFor="let reaction of result.reactions">
+            Ele: {{reaction.element}}  Ni: {{reaction.ni}} Qi: {{reaction.qi}}  Mi: {{reaction.mi}}  Nj: {{reaction.nj}}  Qj: {{reaction.qj}}  Mj: {{reaction.mj}}
+        </mat-list-item>
+    </mat-list> -->
+</div>

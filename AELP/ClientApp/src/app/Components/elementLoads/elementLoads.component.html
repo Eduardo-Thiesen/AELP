@@ -1,0 +1,106 @@
+<form #structureForm="ngForm" novalidate>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Carregamenos nos Elementos</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field hideRequiredMarker="true">
+        <mat-label>Tipo de Carregamento</mat-label>
+        <mat-select [(value)]="loadType">
+          <mat-option *ngFor="let type of loadTypes" [value]=type>
+            <div *ngIf="type == 1">1. Concentrado</div>
+            <div *ngIf="type == 2">2. Distribuído</div>
+            <div *ngIf="type == 3">3. Carga Momento</div>
+            <div *ngIf="type == 4">4. Variação Unif. de Temp.</div>
+            <div *ngIf="type == 5">5. Gradiente de Temp.</div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Elemento</mat-label>
+        <mat-select [(value)]="element">
+          <mat-option *ngFor="let element of elements" [value]=element.number>
+            {{element.number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Direção X</mat-label>
+        <input matInput type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" placeholder="Direção X" [(ngModel)]="direction.x" name="dirX">
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Direção Y</mat-label>
+        <input matInput type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" placeholder="Direção Y" [(ngModel)]="direction.y" name="dirY">
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Início</mat-label>
+        <input matInput type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" placeholder="Início" [(ngModel)]="i" name="i">
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Qi (kN/m)</mat-label>
+        <input matInput type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" placeholder="Qi" [(ngModel)]="qi" name="qi">
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Fim</mat-label>
+        <input matInput type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" placeholder="Fim" [(ngModel)]="j" name="j">
+      </mat-form-field>
+      <mat-form-field class="number-field" hideRequiredMarker="true">
+        <mat-label>Qj (kN/m)</mat-label>
+        <input matInput type="number" step="0.01" placeholder="Qj" [(ngModel)]="qj" name="qj">
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button (click)="addElementLoad()"><i class="fas fa-plus"></i></button>
+    </mat-card-actions>
+  </mat-card>
+
+  <table mat-table *ngIf="elementLoads.length > 0" [dataSource]="elementLoads">
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Tipo </th>
+      <td mat-cell *matCellDef="let element"> {{element.loadType}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="element">
+      <th mat-header-cell *matHeaderCellDef> Elem. </th>
+      <td mat-cell *matCellDef="let element"> {{element.element}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="direction">
+      <th mat-header-cell *matHeaderCellDef> Direção </th>
+      <td mat-cell *matCellDef="let element"> ({{element.direction.x }}, {{element.direction.y}}) </td>
+    </ng-container>
+
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef> Início </th>
+      <td mat-cell *matCellDef="let element"> {{element.i}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="qi">
+      <th mat-header-cell *matHeaderCellDef> Qi </th>
+      <td mat-cell *matCellDef="let element"> {{element.qi}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef> Fim </th>
+      <td mat-cell *matCellDef="let element"> {{element.j}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="qj">
+      <th mat-header-cell *matHeaderCellDef> Qj </th>
+      <td mat-cell *matCellDef="let element"> {{element.qj}} </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="trash">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button (click)="removeElementLoad(element)"><i class="far fa-trash-alt"></i></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
